@@ -56,41 +56,52 @@ exports.getProperties = async (req, res) => {
 };
 
 exports.searchProperty = async (req, res) => {
-  const { title } = req.query;
+  // const { title } = req.query;
 
   let props;
-  if (!title) {
-    return res
-      .status(400)
-      .json({ errors: [{ message: 'Service ID not specified' }] });
-  }
-
+  // if (!title) {
+  //   return res
+  //     .status(400)
+  //     .json({ errors: [{ message: 'title not specified' }] });
+  // }
   try {
-    Property.ensureIndex({ location: '2dsphere' });
+    const keyword = req.query.q
+      ? {
+          title: {
+            $regex: req.query.q,
+            $options: 'i',
+          },
+        }
+      : {};
 
-    //query DB with object and sort
-    props = await Property.aggregate([
-      {
-        $geoNear: {
-          near: {
-            type: 'Point',
-            coordinates: [
-              Number.parseFloat(longitude),
-              Number.parseFloat(latitude),
-            ],
-          },
-          distanceField: 'distance',
-          query: {
-            ...options,
-          },
-        },
-      },
-      {
-        $sort: {
-          distance: 1,
-        },
-      },
-    ]);
-    return res.status(200).json(props);
-  } catch (err) {}
+    const props = await Property.find({ ...keyword });
+    // Property.ensureIndex({ location: '2dsphere' });
+
+    // //query DB with object and sort
+    // props = await Property.aggregate([
+    //   {
+    //     $geoNear: {
+    //       near: {
+    //         type: 'Point',
+    //         coordinates: [
+    //           Number.parseFloat(longitude),
+    //           Number.parseFloat(latitude),
+    //         ],
+    //       },
+    //       distanceField: 'distance',
+    //       query: {
+    //         ...options,
+    //       },
+    //     },
+    //   },
+    //   {
+    //     $sort: {
+    //       distance: 1,
+    //     },
+    //   },
+    // ]);
+    res.status(200).json(props);
+  } catch (err) {
+    console.log(err.message);
+  }
 };
