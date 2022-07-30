@@ -56,51 +56,47 @@ exports.getProperties = async (req, res) => {
 };
 
 exports.searchProperty = async (req, res) => {
-  // const { title } = req.query;
+  const { longitude, latitude, } = req.query;
+  const keyword = req.query.q
+  ? {
+      title: {
+        $regex: req.query.q,
+        $options: 'i',
+      },
+    }
+  : {};
 
-  let props;
-  // if (!title) {
-  //   return res
-  //     .status(400)
-  //     .json({ errors: [{ message: 'title not specified' }] });
-  // }
+  let places
+
   try {
-    const keyword = req.query.q
-      ? {
-          title: {
-            $regex: req.query.q,
-            $options: 'i',
-          },
-        }
-      : {};
-
-    const props = await Property.find({ ...keyword });
+    // const props = await Property.find({ ...keyword });
     // Property.ensureIndex({ location: '2dsphere' });
 
     // //query DB with object and sort
-    // props = await Property.aggregate([
-    //   {
-    //     $geoNear: {
-    //       near: {
-    //         type: 'Point',
-    //         coordinates: [
-    //           Number.parseFloat(longitude),
-    //           Number.parseFloat(latitude),
-    //         ],
-    //       },
-    //       distanceField: 'distance',
-    //       query: {
-    //         ...options,
-    //       },
-    //     },
-    //   },
-    //   {
-    //     $sort: {
-    //       distance: 1,
-    //     },
-    //   },
-    // ]);
-    res.status(200).json(props);
+    places = await Property.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [
+              Number.parseFloat(longitude),
+              Number.parseFloat(latitude),
+            ],
+          },
+          distanceField: 'distance',
+          query: {
+            ...keyword,
+          },
+        },
+      },
+      {
+        $sort: {
+          distance: 1,
+        },
+      },
+    ]);
+    // res.status(200).json(props);
+    res.status(200).json(places);
   } catch (err) {
     console.log(err.message);
   }
