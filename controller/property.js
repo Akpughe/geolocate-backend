@@ -56,23 +56,23 @@ exports.getProperties = async (req, res) => {
 };
 
 exports.searchProperty = async (req, res) => {
-  const { longitude, latitude, } = req.query;
+  const { longitude, latitude, q } = req.query;
+  // const { name } = address;
   const keyword = req.query.q
-  ? {
-      title: {
-        $regex: req.query.q,
-        $options: 'i',
-      },
-    }
-  : {};
+    ? {
+        'address.name': { $regex: q, $options: 'i' },
+      }
+    : {};
 
-  let places
+  let places;
 
   try {
-    // const props = await Property.find({ ...keyword });
+    // const props = await Property.find({
+    //   ...keyword,
+    // });
     // Property.ensureIndex({ location: '2dsphere' });
 
-    // //query DB with object and sort
+    //query DB with object and sort
     places = await Property.aggregate([
       {
         $geoNear: {
