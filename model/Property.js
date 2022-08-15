@@ -3,11 +3,39 @@ const Schema = mongoose.Schema;
 
 const PropertySchema = new mongoose.Schema(
   {
-    title: {
-        type: String,
-        required: true,
-        unique: true,
+    price: {
+      type: String,
+      required: true,
     },
+    homeType: {
+      type: String,
+      required: true,
+    },
+    bedroom: {
+      type: String,
+      required: true,
+    },
+    bathroom: {
+      type: String,
+      required: true,
+    },
+    yearBuilt: {
+      type: String,
+      required: true,
+    },
+    sqft: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    // title: {
+    //   type: String,
+    //   required: true,
+    //   unique: true,
+    // },
     location: {
       type: {
         type: String,

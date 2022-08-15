@@ -3,23 +3,38 @@ const axios = require('axios');
 const { GOOGLE_GEOCODE_API } = require('../config/constants');
 
 exports.createProperty = async (req, res) => {
-  const { title, address } = req.body;
+  const {
+    price,
+    homeType,
+    bedroom,
+    bathroom,
+    yearBuilt,
+    sqft,
+    description,
+    address,
+  } = req.body;
 
   try {
-    let property = await Property.findOne({ title });
+    let property = await Property.find();
 
-    if (property) {
-      return res.status(400).json({
-        errors: [{ message: 'Property user already exists' }],
-      });
-    }
+    // if (property) {
+    //   return res.status(400).json({
+    //     errors: [{ message: 'Property user already exists' }],
+    //   });
+    // }
 
     const { data: addressDetails } = await axios.get(
       `${GOOGLE_GEOCODE_API}&place_id=${address.placeId}`
     );
 
     property = new Property({
-      title,
+      price,
+      homeType,
+      bedroom,
+      bathroom,
+      yearBuilt,
+      sqft,
+      description,
       address,
       location: {
         type: 'Point',
@@ -99,5 +114,24 @@ exports.searchProperty = async (req, res) => {
     res.status(200).json(places);
   } catch (err) {
     console.log(err.message);
+  }
+};
+
+exports.getPropertyById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const property = await Property.findById(id);
+
+    if (!property) {
+      return res.status(404).json({
+        errors: [{ message: 'Property not found' }],
+      });
+    }
+
+    res.status(200).json(property);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('Server Error');
   }
 };
