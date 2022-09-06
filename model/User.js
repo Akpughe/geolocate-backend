@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Role = require("./Role");
 
 const UserSchema = new mongoose.Schema({
-  fullname: {
+  name: {
     type: String,
     required: true,
   },
@@ -14,18 +14,11 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
   },
-  profilePicture: {
-    public_id: {
-      type: String,
-    },
-    fileName: {
-      type: String,
-    },
-    url: {
-      type: String,
-    },
+  image: {
+    type: String,
+    required: false,
   },
   addresses: [
     {
