@@ -8,7 +8,6 @@ exports.createProperty = async (req, res) => {
     homeType,
     bedroom,
     bathroom,
-    yearBuilt,
     sqft,
     description,
     address,
@@ -32,7 +31,6 @@ exports.createProperty = async (req, res) => {
       homeType,
       bedroom,
       bathroom,
-      yearBuilt,
       sqft,
       description,
       address,
@@ -52,7 +50,7 @@ exports.createProperty = async (req, res) => {
       property: property,
     });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     res.status(500).send('Server Error');
   }
 };

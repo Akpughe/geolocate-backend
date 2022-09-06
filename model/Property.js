@@ -19,10 +19,6 @@ const PropertySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    yearBuilt: {
-      type: String,
-      required: true,
-    },
     sqft: {
       type: String,
       required: true,
